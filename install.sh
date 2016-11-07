@@ -118,27 +118,22 @@ ldconfig
 popd
 
 # Build bcm2835 library (needed by custom packet forwarder)
-if [ ! -f /usr/bin/aclocal-1.13 ]; then
-    ln -sf /usr/bin/aclocal-1.14 /usr/bin/aclocal-1.13
-    ln -sf /usr/bin/automake-1.14 /usr/bin/automake-1.13
+if [ ! -f /usr/local/lib/libbcm2835.a ]; then
+    if [ ! -f /usr/bin/aclocal-1.13 ]; then
+        ln -sf /usr/bin/aclocal-1.14 /usr/bin/aclocal-1.13
+    fi
+    wget http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz
+    tar zxvf bcm2835-1.50.tar.gz
+    pushd bcm2835-1.50
+
+    ./configure
+    make
+    make install
+    ldconfig
+
+    popd
 fi
 
-if [ ! -d bcm2835 ]; then
-    git clone https://github.com/ch2i/bcm2835.git
-    pushd bcm2835
-else
-    pushd bcm2835
-    git reset --hard
-    git pull
-fi
-
-./configure
-make
-make check
-make install
-ldconfig
-
-popd
 
 # Build LoRa gateway app
 if [ ! -d lora_gateway ]; then
