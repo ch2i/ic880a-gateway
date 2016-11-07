@@ -93,7 +93,7 @@ fi
 
 # Check dependencies
 echo "Installing dependencies..."
-apt-get install swig libftdi-dev python-dev
+apt-get install swig libftdi-dev python-dev automake
 
 # Install LoRaWAN packet forwarder repositories
 INSTALL_DIR="/opt/ttn-gateway"
@@ -118,6 +118,11 @@ ldconfig
 popd
 
 # Build bcm2835 library (needed by custom packet forwarder)
+if [ ! -f /usr/bin/aclocal-1.13 ]; then
+    ln -sf /usr/bin/aclocal-1.14 /usr/bin/aclocal-1.13
+    ln -sf /usr/bin/automake-1.14 /usr/bin/automake-1.13
+fi
+
 if [ ! -d bcm2835 ]; then
     git clone https://github.com/ch2i/bcm2835.git
     pushd bcm2835
