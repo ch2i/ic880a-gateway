@@ -8,7 +8,7 @@ if [ $UID != 0 ]; then
     exit 1
 fi
 
-VERSION="master"
+VERSION="master" 
 if [[ $1 != "" ]]; then VERSION=$1; fi
 
 echo "The Things Network Gateway installer"
@@ -22,10 +22,10 @@ git checkout -q $VERSION
 git pull
 NEW_HEAD=$(git rev-parse HEAD)
 
-if [[ $OLD_HEAD != $NEW_HEAD ]]; then
-    echo "New installer found. Restarting process..."
-    exec "./install.sh" "$VERSION"
-fi
+# if [[ $OLD_HEAD != $NEW_HEAD ]]; then
+#    echo "New installer found. Restarting process..."
+#    exec "./install.sh" "$VERSION"
+# fi
 
 # Request gateway configuration data
 # There are two ways to do it, manually specify everything
@@ -44,7 +44,7 @@ if [[ `grep "$GATEWAY_EUI_NIC" /proc/net/dev` == "" ]]; then
     exit 1
 fi
 
-GATEWAY_EUI=$(ip link show $GATEWAY_EUI_NIC | awk '/ether/ {print $2}' | awk -F\: '{print $1$2$3"FFFE"$4$5$6}')
+GATEWAY_EUI=$(ip link show $GATEWAY_EUI_NIC | awk '/ether/ {print $2}' | awk -F\: '{print "FB10"$1$2$3$4$5$6}')
 GATEWAY_EUI=${GATEWAY_EUI^^} # toupper
 
 echo "Detected EUI $GATEWAY_EUI from $GATEWAY_EUI_NIC"
@@ -60,9 +60,9 @@ else
     read NEW_HOSTNAME
     if [[ $NEW_HOSTNAME == "" ]]; then NEW_HOSTNAME="ttn-gateway"; fi
 
-    printf "       Descriptive name [ttn-ic880a]:"
+    printf "       Descriptive name [ttn-ch2i-ic880a]:"
     read GATEWAY_NAME
-    if [[ $GATEWAY_NAME == "" ]]; then GATEWAY_NAME="ttn-ic880a"; fi
+    if [[ $GATEWAY_NAME == "" ]]; then GATEWAY_NAME="ttn-ch2i-ic880a"; fi
 
     printf "       Contact email: "
     read GATEWAY_EMAIL
@@ -117,6 +117,24 @@ ldconfig
 
 popd
 
+# Build bcm2835 library (needed by custom packet forwarder)
+if [ ! -d bcm2835 ]; then
+    git clone https://github.com/ch2i/bcm2835.git
+    pushd bcm2835
+else
+    pushd bcm2835
+    git reset --hard
+    git pull
+fi
+
+./configure
+make
+make check
+make install
+ldconfig
+
+popd
+
 # Build LoRa gateway app
 if [ ! -d lora_gateway ]; then
     git clone https://github.com/TheThingsNetwork/lora_gateway.git
@@ -129,9 +147,7 @@ fi
 
 cp ./libloragw/99-libftdi.rules /etc/udev/rules.d/99-libftdi.rules
 
-sed -i -e 's/CFG_SPI= native/CFG_SPI= ftdi/g' ./libloragw/library.cfg
-sed -i -e 's/PLATFORM= kerlink/PLATFORM= lorank/g' ./libloragw/library.cfg
-sed -i -e 's/ATTRS{idProduct}=="6010"/ATTRS{idProduct}=="6014"/g' /etc/udev/rules.d/99-libftdi.rules
+sed -i -e 's/PLATFORM= kerlink/PLATFORM= imst_rpi/g' ./libloragw/library.cfg
 
 make
 
@@ -139,7 +155,7 @@ popd
 
 # Build packet forwarder
 if [ ! -d packet_forwarder ]; then
-    git clone https://github.com/TheThingsNetwork/packet_forwarder.git
+    git clone https://github.com/ch2i/packet_forwarder.git
     pushd packet_forwarder
 else
     pushd packet_forwarder
@@ -178,10 +194,16 @@ if [ "$REMOTE_CONFIG" = true ] ; then
     popd
 else
     echo -e "{\n\t\"gateway_conf\": {\n\t\t\"gateway_ID\": \"$GATEWAY_EUI\",\n\t\t\"servers\": [ { \"server_address\": \"router.eu.thethings.network\", \"serv_port_up\": 1700, \"serv_port_down\": 1700, \"serv_enabled\": true } ],\n\t\t\"ref_latitude\": $GATEWAY_LAT,\n\t\t\"ref_longitude\": $GATEWAY_LON,\n\t\t\"ref_altitude\": $GATEWAY_ALT,\n\t\t\"contact_email\": \"$GATEWAY_EMAIL\",\n\t\t\"description\": \"$GATEWAY_NAME\" \n\t}\n}" >$LOCAL_CONFIG_FILE
+    # CH2i shield specific led configuration pin
+    sudo sed -i -e '/description/ i \\t\t"led_heartbeat": 4,' $LOCAL_CONFIG_FILE
+    sudo sed -i -e '/description/ i \\t\t"led_down":18,' $LOCAL_CONFIG_FILE
+    sudo sed -i -e '/description/ i \\t\t"led_error":23,' $LOCAL_CONFIG_FILE
+    sudo sed -i -e '/description/ i \\t\t"led_packet":24,' $LOCAL_CONFIG_FILE
 fi
 
 popd
-
+# CH2i shield has different SX1321 reset pin
+sudo sed -i -e 's/SX1301_RESET_BCM_PIN=25/SX1301_RESET_BCM_PIN=17/g' ./start.sh
 echo "Gateway EUI is: $GATEWAY_EUI"
 echo "The hostname is: $NEW_HOSTNAME"
 echo "Check gateway status here (find your EUI): http://staging.thethingsnetwork.org/gatewaystatus/"
@@ -191,8 +213,10 @@ echo "Installation completed."
 # Start packet forwarder as a service
 cp ./start.sh $INSTALL_DIR/bin/
 cp ./ttn-gateway.service /lib/systemd/system/
+
 systemctl enable ttn-gateway.service
 
-echo "The system will reboot in 5 seconds..."
-sleep 5
-shutdown -r now
+echo "Don't forget to reboot the system typing"
+echo "shutdown -r now"
+#sleep 5
+#shutdown -r now
