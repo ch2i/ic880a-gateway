@@ -2,7 +2,8 @@
 
 Reference setup for [The Things Network](http://thethingsnetwork.org/) gateways based on the iC880a USB concentrator with a Raspberry Pi host.
 
-This installer targets the **[CH2i SPI Raspberry PI shield version](https://github.com/ch2i/iC880A-Raspberry-PI)** of the board.
+This installer targets the **[CH2i SPI Raspberry PI shield version](https://github.com/ch2i/iC880A-Raspberry-PI)** of the board.    
+
 <img src="https://raw.githubusercontent.com/ch2i/ic880a-gateway/ch2i-rpi-shield/pictures/ch2i-shield-mounted.jpg" alt="Full stack" width="25%" height="25%"> 
 
 if you have the classic SPI wiring version, [check this branch](https://github.com/ttn-zh/ic880a-gateway/tree/spi).
