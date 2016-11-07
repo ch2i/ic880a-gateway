@@ -118,11 +118,11 @@ ldconfig
 popd
 
 # Build bcm2835 library (needed by custom packet forwarder)
-if [ ! -d ~/bcm2835 ]; then
-    git clone https://github.com/ch2i/bcm2835.git ~/bcm2835
-    pushd ~/bcm2835
+if [ ! -d bcm2835 ]; then
+    git clone https://github.com/ch2i/bcm2835.git
+    pushd bcm2835
 else
-    pushd ~/bcm2835
+    pushd bcm2835
     git reset --hard
     git pull
 fi
