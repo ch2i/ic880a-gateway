@@ -20,7 +20,7 @@
 #include <signal.h>    
 
 // Blink delay (in ms)
-#define BLINK_DELAY 200
+#define BLINK_DELAY 100
 
 int     exit_sig   = 0; // application terminates cleanly
 uint8_t LED_pins[] = {4, 18, 23, 24}; // GPIO line LED
@@ -37,6 +37,9 @@ int main(int argc, char **argv)
 
   struct sigaction sigact; 
 
+  printf("%s starting...\n", __BASEFILE__);
+
+	
   // configure signal handling 
   sigemptyset(&sigact.sa_mask);
   sigact.sa_flags = 0;
@@ -50,29 +53,35 @@ int main(int argc, char **argv)
 
   } else {
 
-    // Drive all LED line as output and set them High (HIGH = LED Off)
+    // Drive all LED line as output and set them OFF
     for ( i=0; i<sizeof(LED_pins); i++) {
       bcm2835_gpio_fsel (LED_pins[i], BCM2835_GPIO_FSEL_OUTP );
       bcm2835_gpio_write(LED_pins[i], HIGH );
     }
 
     // Loop until end
-    while (exit_sig==0) {
+    while (!exit_sig) {
       // Now try to detect all modules
       for ( i=0; i<sizeof(LED_pins); i++) {
         // Light ON
         bcm2835_gpio_write(LED_pins[i], LOW);
-        delay(BLINK_DELAY);
+				if (exit_sig)
+					break;
+        bcm2835_delay(BLINK_DELAY*4);
         // Light OFF
         bcm2835_gpio_write(LED_pins[i], HIGH);
-        delay(BLINK_DELAY);
+				if (exit_sig)
+					break;
+        bcm2835_delay(BLINK_DELAY);
       }
     }
   }
 
+  printf("Received ending signal, exiting...\n");
+
   // all LED OFF
   for ( i=0; i<sizeof(LED_pins); i++) {
-    bcm2835_gpio_write(LED_pins[i], HIGH );
+    bcm2835_gpio_write(LED_pins[i], LOW );
   }
 
   bcm2835_close();
