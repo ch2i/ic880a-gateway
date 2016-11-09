@@ -199,6 +199,10 @@ else
     sudo sed -i -e '/description/ i \\t\t"led_down":18,' $LOCAL_CONFIG_FILE
     sudo sed -i -e '/description/ i \\t\t"led_error":23,' $LOCAL_CONFIG_FILE
     sudo sed -i -e '/description/ i \\t\t"led_packet":24,' $LOCAL_CONFIG_FILE
+		
+    # CH2i shield specific configuration 
+    sudo sed -i -e '/description/ i \\t\t"stat_interval":3600,' $LOCAL_CONFIG_FILE
+    sudo sed -i -e '/description/ i \\t\t"keepalive_interval":60,' $LOCAL_CONFIG_FILE
 fi
 
 popd
