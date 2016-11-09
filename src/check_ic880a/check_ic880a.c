@@ -36,7 +36,12 @@ void getModuleName(uint8_t version)
   printf(" => ");
   if (version==00 || version==0xFF )
     printf("Nothing!\n");
-  else if (version == 0x67)
+  else if (version == 0x11)
+    printf("SX1255");
+  else if (version == 0x21)
+    printf("SX1257");
+	// datasheet claims 0x67 but on my board it's 0x62
+  else if (version == 0x67 || version==0x62)
     printf("SX1301 LoraWAN Concentrator");
   else if (version == 0x12)
     printf("SX1276 RF95/96");
@@ -55,16 +60,24 @@ void readModuleVersion(uint8_t cs_pin)
 {
   uint8_t version;
 
-  // SX1301 version is reg 0x01 => 0x67
-  printf("Checking SX1301 register(0x01) with CS=GPIO%02d", cs_pin);
+  // SX1301 version is reg 0x01 
+  printf("Checking SX1301 register(0x01)");
   getModuleName( readRegister( cs_pin, 0x01 ));
 
+  // SX1257 version is reg 0x07 
+  printf("Checking SX1257 register(0x07)");
+  getModuleName( readRegister( cs_pin, 0x07 ));
+
+  // SX1255 version is reg 0x07 
+  printf("Checking SX1255 register(0x07)");
+  getModuleName( readRegister( cs_pin, 0x07 ));
+
   // RFM9x version is reg 0x42
-  printf("Checking RFM9x register(0x42) with CS=GPIO%02d", cs_pin);
+  printf("Checking RFM9x  register(0x42)");
   getModuleName( readRegister( cs_pin, 0x42) );
 
   // RFM69 version is reg 0x10
-  printf("Checking RFM69 register(0x10) with CS=GPIO%02d", cs_pin);
+  printf("Checking RFM69  register(0x10)");
   getModuleName ( readRegister( cs_pin, 0x10) ) ;
 }
 
@@ -98,7 +111,9 @@ int main(int argc, char **argv)
 
     // Now try to detect all modules
     for ( i=0; i<sizeof(CS_pins); i++) {
-      readModuleVersion( CS_pins[i] ); 
+			uint8_t cs = CS_pins[i];
+			printf("\n-- Asserting CS=GPIO%d %s --\n", cs, cs==8?"(CE0)":cs==7?"(CE1)":"");
+      readModuleVersion( cs ); 
     }
 
     bcm2835_spi_end();
