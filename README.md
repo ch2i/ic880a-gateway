@@ -23,7 +23,7 @@ if you have the USB version, [check this branch](https://github.com/ttn-zh/ic880
   - **Dual power**, one for RPI and one for ic880a (JP1 on shield need to be opened)
     - Descent 5V power (1A) via Raspberry PI microusb classic connector (no matter JP2 state) AND
     - Descent 5V power (1A) via Shield DC Barrel or terminal block (JP2 on shield need to be closed)
-    - OR Descent 6V/32V power (1A) Shield DC Barrel or terminal block (JP2 on shield need to be opened and DC/DC step down placed on the shield)
+    - OR Descent 6V/28V power (1A) Shield DC Barrel or terminal block (JP2 on shield need to be opened and DC/DC step down placed on the shield)
 - Power your RPi and wait for 1 minute
 - From a computer in the same LAN, `ssh` into the RPi using the default hostname:
 
@@ -35,9 +35,10 @@ if you have the USB version, [check this branch](https://github.com/ttn-zh/ic880
         pi@raspberrypi:~ $ sudo raspi-config
 
   - expand the filesystem (1 Expand filesystem):
-  - locale (5  Internationalisation Options / Change Locale)
+  - locale (5  Internationalisation Options / Change Locale) en us UTF8
   - timezone (5  Internationalisation Options / Change Timezone)
   - activate SPI (9 Advanced Options / SPI / Enable)
+  - activate I2C (9 Advanced Options / I2C / Enable) if you put I2C sensors on shield
   - reduce video memory (9 Advanced Options / Memory Split/ Set to 16) we use SSH no desktop or monitor
 
 - Reboot and ssh back to the device
@@ -45,7 +46,7 @@ if you have the USB version, [check this branch](https://github.com/ttn-zh/ic880
 
         pi@raspberrypi:~ $ sudo apt-get update
         pi@raspberrypi:~ $ sudo apt-get upgrade
-        pi@raspberrypi:~ $ sudo apt-get install git-core
+        pi@raspberrypi:~ $ sudo apt-get install git-core i2c-tools
 
 - Create new user for TTN and add it to sudoers
 
@@ -73,12 +74,77 @@ And add the following block at the end of the file, replacing SSID and password 
                     ssid="The_SSID_of_your_wifi"
                     psk="Your_wifi_password"
                 }
- 
-- Clone [the installer](https://github.com/ch2i/ic880a-gateway/) and start the installation
+
+Note that if you're moving gateway from one place to another during testing and thus, may have different SSID, you can add multiple access point by adding as much network as you need:
+
+                network={
+                    ssid="The_SSID_of_your_1st_access_point"
+                    psk="1st_access_point_password"
+                }
+
+                network={
+                    ssid="The_SSID_of_your_2nd_access_point"
+                    psk="2nd_access_point_password"
+                }
+
+- Clone [the installer](https://github.com/ch2i/ic880a-gateway/) (note it's not the master branch but the ch2i-rpi-shield one) and start the installation
 
         $ git clone -b ch2i-rpi-shield https://github.com/ch2i/ic880a-gateway.git ~/ic880a-gateway
         $ cd ~/ic880a-gateway
         $ sudo ./install.sh
+
+
+- You can test the shield board features (LED, Sensors, Wiring, ...) with some dedicated program in `src` folder
+
+        # To check LED and make them blink (ic880a does not need to be plugged)
+        $ cd ~/ic880a-gateway/src/check_led
+        $ make; ./check_led
+
+        # To check ic880a, plug it and verify
+        $ cd ~/ic880a-gateway/src/check_ic880a
+        $ make; ./check_ic880a
+
+        -- Asserting CS=GPIO8 (CE0) --
+        Checking SX1301 register(0x01) => SX1301 LoraWAN Concentrator (V=0x67)
+        Checking SX1257 register(0x07) => Nothing!
+        Checking SX1255 register(0x07) => Nothing!
+        Checking RFM9x  register(0x42) => Nothing!
+        Checking RFM69  register(0x10) => Nothing!
+
+
+- If you added some sensors on the shield (BME280 and SI7021/HTU21D) and send data to IoT dashboard (in this example Cayenne),  Clone [the cayenne](https://github.com/myDevicesIoT/Cayenne-MQTT-CPP) API. 
+
+
+        # To check sensors if any (BME280 and/or SI7021 or HTU21D)
+        $ cd ~/ic880a-gateway
+        $ git clone https://github.com/myDevicesIoT/Cayenne-MQTT-CPP
+        $ cd ic880a-gateway/src/sensors
+
+
+Don't forget to put your Cayenne username, password and client ID. You get the from Cayenne dashbord (add / New Device / Bring Your Own Thing) and report then back in file sensors.cpp before compilation
+```cpp
+// Cayenne authentication info. This should be obtained from the Cayenne Dashboard.
+char username[] = "a1ced9e0-b24e-11e6-bb76-1157AA55AA55";
+char password[] = "0858f39268653283bf68bb08b165c07cAA55AA55";
+char clientID[] = "bd6c2ab0-bd1e-11e6-9638-53ecAA55AA55";
+```
+
+        $ make; ./sensors
+        Checking BMP280 or BME280 device...BME280, OK!
+        Checking SI7021 or HTU21D device...SI7021 found
+        Connecting to mqtt.mydevices.com:1883
+        Connected
+        BME280 reading
+          51.99 C
+          12.52 %RH
+          1019.37 hPa
+          -50.82 m
+        SI7021 Reading
+          Temp : 36.13C
+          Hum : 19.1%rh
+        ^C
+        Break received, exiting!
+
 
 - If you want to use the remote configuration option, please make sure you have created a JSON file named as your gateway EUI (e.g. `B827EBFFFE7B80CD.json`) in the [Gateway Remote Config repository](https://github.com/ttn-zh/gateway-remote-config). 
 - **Big Success!** You should now have a running gateway in front of you!
