@@ -153,6 +153,53 @@ And it looks something like this
 - If you want to use the remote configuration option, please make sure you have created a JSON file named as your gateway EUI (e.g. `B827EBFFFE7B80CD.json`) in the [Gateway Remote Config repository](https://github.com/ttn-zh/gateway-remote-config). 
 - **Big Success!** You should now have a running gateway in front of you!
 
+
+- Some tips may help you also such as Restart TTN service with
+```
+sudo systemctl restart ttn-gateway.service
+```
+
+- Or see log file in real time with 
+```shell
+sudo journalctl -f -u ttn-gateway.service
+
+-- Logs begin at Thu 2016-08-11 21:09:47 CEST. --
+Aug 12 16:16:27 pi04 ttn-gateway[1525]: ### [GPS] ###
+Aug 12 16:16:27 pi04 ttn-gateway[1525]: # Invalid gps time reference (age: 1471011382 sec)
+Aug 12 16:16:27 pi04 ttn-gateway[1525]: # Manual GPS coordinates: latitude 46.62477, longitude 0.43528, altitude 104 m
+Aug 12 16:16:27 pi04 ttn-gateway[1525]: ##### END #####
+Aug 12 16:16:27 pi04 ttn-gateway[1525]: INFO: End of upstream thread
+Aug 12 16:16:27 pi04 ttn-gateway[1525]: INFO: End of downstream thread for server  0.
+Aug 12 16:16:27 pi04 ttn-gateway[1525]: INFO: concentrator stopped successfully
+Aug 12 16:16:27 pi04 ttn-gateway[1525]: INFO: Exiting packet forwarder program
+Aug 12 16:16:27 pi04 systemd[1]: Starting The Things Network Gateway...
+Aug 12 16:16:27 pi04 systemd[1]: Started The Things Network Gateway.
+Aug 12 16:16:38 pi04 ttn-gateway[14558]: [TTN Gateway]: Waiting for internet connection...
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: *** Poly Packet Forwarder for Lora Gateway ***
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: Version: 2.1.0
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: *** Lora concentrator HAL library version info ***
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: Version: 3.1.0; Options: native;
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: ***
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: INFO: Little endian host
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: INFO: found global configuration file global_conf.json, parsing it
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: INFO: global_conf.json does contain a JSON object named SX1301_conf, parsing SX1301 parameters
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: INFO: lorawan_public 1, clksrc 1
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: INFO: Configuring TX LUT with 16 indexes
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: INFO: radio 0 enabled (type SX1257), center frequency 867500000, RSSI offset -166.000000, tx enabled 1
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: INFO: radio 1 enabled (type SX1257), center frequency 868500000, RSSI offset -166.000000, tx enabled 0
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: INFO: Lora multi-SF channel 0>  radio 1, IF -400000 Hz, 125 kHz bw, SF 7 to 12
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: INFO: Lora multi-SF channel 1>  radio 1, IF -200000 Hz, 125 kHz bw, SF 7 to 12
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: INFO: Lora multi-SF channel 2>  radio 1, IF 0 Hz, 125 kHz bw, SF 7 to 12
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: INFO: Lora multi-SF channel 3>  radio 0, IF -400000 Hz, 125 kHz bw, SF 7 to 12
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: INFO: Lora multi-SF channel 4>  radio 0, IF -200000 Hz, 125 kHz bw, SF 7 to 12
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: INFO: Lora multi-SF channel 5>  radio 0, IF 0 Hz, 125 kHz bw, SF 7 to 12
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: INFO: Lora multi-SF channel 6>  radio 0, IF 200000 Hz, 125 kHz bw, SF 7 to 12
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: INFO: Lora multi-SF channel 7>  radio 0, IF 400000 Hz, 125 kHz bw, SF 7 to 12
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: INFO: Lora std channel> radio 1, IF -200000 Hz, 250000 Hz bw, SF 7
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: INFO: FSK channel> radio 1, IF 300000 Hz, 125000 Hz bw, 50000 bps datarate
+Aug 12 16:17:08 pi04 ttn-gateway[14558]: INFO: global_conf.json does contain a JSON object named gateway_conf, 
+```
+
 # Credits
 
 These scripts are largely based on the awesome work by [Ruud Vlaming](https://github.com/devlaam) on the [Lorank8 installer](https://github.com/Ideetron/Lorank)
