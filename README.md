@@ -4,7 +4,7 @@ Reference setup for [The Things Network](http://thethingsnetwork.org/) gateways 
 
 This installer targets the **[CH2i SPI Raspberry PI shield version](https://github.com/ch2i/iC880A-Raspberry-PI)** of the board.    
 
-<img src="https://raw.githubusercontent.com/ch2i/ic880a-gateway/ch2i-rpi-shield/pictures/ch2i-shield-mounted.jpg" alt="Full stack" width="25%" height="25%"> 
+<img src="https://raw.githubusercontent.com/ch2i/ic880a-gateway/ch2i-rpi-shield/pictures/ch2i-shield-mounted.jpg" alt="Full stack" width="25%" height="25%">&nbsp;<img src="https://raw.githubusercontent.com/ch2i/ic880a-gateway/ch2i-rpi-shield/pictures/ch2i-shield-lorawan-gateway.jpg" alt="CH2i LoraWan Gateway into nice enclosure" width="25%" height="25%"> 
 
 if you have the classic SPI wiring version, [check this branch](https://github.com/ttn-zh/ic880a-gateway/tree/spi).
 if you have the USB version, [check this branch](https://github.com/ttn-zh/ic880a-gateway/).
@@ -144,6 +144,10 @@ char clientID[] = "bd6c2ab0-bd1e-11e6-9638-53ecAA55AA55";
           Hum : 19.1%rh
         ^C
         Break received, exiting!
+
+And it looks something like this
+
+<img src="https://raw.githubusercontent.com/ch2i/ic880a-gateway/ch2i-rpi-shield/pictures/ch2i-gateway-monitoring-iot.jpg" alt="Ch2i LoraWan Gateway on Cayenne">
 
 
 - If you want to use the remote configuration option, please make sure you have created a JSON file named as your gateway EUI (e.g. `B827EBFFFE7B80CD.json`) in the [Gateway Remote Config repository](https://github.com/ttn-zh/gateway-remote-config). 
