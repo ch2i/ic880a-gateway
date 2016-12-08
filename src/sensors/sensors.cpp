@@ -36,9 +36,9 @@ volatile sig_atomic_t force_exit = 0;
 static char dev[16]="";
 
 // Cayenne authentication info. This should be obtained from the Cayenne Dashboard.
-char username[] = "a1ced9e0-b24e-11e6-bb76-1157597ded22";
-char password[] = "0858f39268653283bf68bb08b165c07cd6cb1959";
-char clientID[] = "bd6c2ab0-bd1e-11e6-9638-53ecf337e03f";
+char username[] = "a1ced9e0-b24e-11e6-bb76-xxxxxxxxxxxx";
+char password[] = "0858f39268653283bf68bb08yyyyyyyyyyyyyyyy";
+char clientID[] = "bd6c2ab0-bd1e-11e6-9638-zzzzzzzzzzzz";
 
 MQTTNetwork ipstack;
 CayenneMQTT::MQTTClient<MQTTNetwork, MQTTTimer> mqttClient(ipstack, username, password, clientID);
