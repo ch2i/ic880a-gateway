@@ -1,0 +1,30 @@
+# as root in terminal 
+#
+# ln -s $PWD/sensors.js /opt/ttn-gateway/bin/sensors.js
+#
+# Enable the service
+# systemctl enable sensors-js.service
+#
+# Start the service
+# systemctl start sensors-js.service
+#
+# Verify it is running
+# systemctl status sensors-js.service
+
+
+[Unit]
+Description=CH2i TTN Gateway Sensors service
+
+[Service]
+ExecStart=/usr/bin/node /opt/ttn-gateway/bin/sensors.js
+Restart=always
+RestartSec=30                       # Restart service after 30 seconds if node service crashes
+StandardOutput=syslog               # Output to syslog
+StandardError=syslog                # Output to syslog
+SyslogIdentifier=sensors-js
+#User=<alternate user>
+#Group=<alternate group>
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
