@@ -112,38 +112,46 @@ Note that if you're moving gateway from one place to another during testing and 
         Checking RFM69  register(0x10) => Nothing!
 
 
-- If you added some sensors on the shield (BME280 and SI7021/HTU21D) and send data to IoT dashboard (in this example Cayenne),  Clone [the cayenne](https://github.com/myDevicesIoT/Cayenne-MQTT-CPP) API. 
+- If you added some sensors on the shield (BMP280/BME280 and/or SI7021/HTU21D) and send data to IoT dashboard (in this example Cayenne),  ~~Clone [the cayenne](https://github.com/myDevicesIoT/Cayenne-MQTT-CPP) API~~ launch script installer and type your Cayenne username, password and client ID when asked. You can get them from Cayenne dashbord (add / New Device / Bring Your Own )
 
 
-        # To check sensors if any (BME280 and/or SI7021 or HTU21D)
-        $ cd ~/ic880a-gateway
-        $ git clone https://github.com/myDevicesIoT/Cayenne-MQTT-CPP
-        $ cd ic880a-gateway/src/sensors
-
-
-Don't forget to put your Cayenne username, password and client ID. You get the from Cayenne dashbord (add / New Device / Bring Your Own Thing) and report then back in file sensors.cpp before compilation
-```cpp
-// Cayenne authentication info. This should be obtained from the Cayenne Dashboard.
-char username[] = "a1ced9e0-b24e-11e6-bb76-1157AA55AA55";
-char password[] = "0858f39268653283bf68bb08b165c07cAA55AA55";
-char clientID[] = "bd6c2ab0-bd1e-11e6-9638-53ecAA55AA55";
 ```
+ttn@ttn-gw02:~/ $ cd ic880a-gateway/src/sensors_js
+ttn@ttn-gw02:~/ic880a-gateway/src/sensors_js $ sudo chmod ug+x install.sh
+ttn@ttn-gw02:~/ic880a-gateway/src/sensors_js $ sudo ./install.sh
+nodejs found, v6.9.2
+bme280-sensor upgrade
+si7021-sensor upgrade
+cayennejs upgrade
+Please enter your cayenne credentials and your
+device client ID (see https://cayenne.mydevices.com/)
+  Cayenne username : aaaaaaaa-bbbb-cccc-dddd-eeeeeeee
+  Cayenne password : ffffffffffffffffffffffffffffffffff
+  Cayenne clientID : aaaaaaaa-bbbb-cccc-dddd-eeeeeeee
+Waiting service to start and connect...
 
-        $ make; ./sensors
-        Checking BMP280 or BME280 device...BME280, OK!
-        Checking SI7021 or HTU21D device...SI7021 found
-        Connecting to mqtt.mydevices.com:1883
-        Connected
-        BME280 reading
-          51.99 C
-          12.52 %RH
-          1019.37 hPa
-          -50.82 m
-        SI7021 Reading
-          Temp : 36.13C
-          Hum : 19.1%rh
-        ^C
-        Break received, exiting!
+Installation completed.\n
+use sudo systemctl status sensors-js to see service status
+use sudo journalctl -f -u sensors-js to see service log
+● sensors-js.service - CH2i TTN Gateway Sensors service
+   Loaded: loaded (/lib/systemd/system/sensors-js.service; enabled)
+   Active: active (running) since Tue 2016-12-13 11:41:29 CET; 3s ago
+ Main PID: 8295 (node)
+   CGroup: /system.slice/sensors-js.service
+           └─8295 /usr/bin/node /opt/ttn-gateway/bin/sensors.js
+
+Dec 13 11:41:30 ttn-gw02 sensors-js[8295]: BME280 data = {
+Dec 13 11:41:30 ttn-gw02 sensors-js[8295]: "temperature_C": 43.54,
+Dec 13 11:41:30 ttn-gw02 sensors-js[8295]: "humidity": 13.888340312121443,
+Dec 13 11:41:30 ttn-gw02 sensors-js[8295]: "pressure_hPa": 1013.9026493024522
+Dec 13 11:41:30 ttn-gw02 sensors-js[8295]: }
+Dec 13 11:41:30 ttn-gw02 sensors-js[8295]: SI7021 initialization succeeded
+Dec 13 11:41:30 ttn-gw02 sensors-js[8295]: SI7021 data = {
+Dec 13 11:41:30 ttn-gw02 sensors-js[8295]: "humidity": 28.862518310546875,
+Dec 13 11:41:30 ttn-gw02 sensors-js[8295]: "temperature_C": 27.496376953125
+Dec 13 11:41:30 ttn-gw02 sensors-js[8295]: }
+ttn@ttn-gw02:~/ic880a-gateway/src/sensors_js $
+```
 
 And it looks something like this
 
