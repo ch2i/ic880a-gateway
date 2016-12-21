@@ -304,28 +304,30 @@ The iC880A extented connection pin are the following, I've put the mapping of su
 
 - For now, clone [the default installer](https://github.com/ttn-zh/ic880a-gateway/tree/spi) (note it's not the master branch but the spi one) and start the installation
 
+
         $ git clone -b spi https://github.com/ttn-zh/ic880a-gateway ~/ic880a-gateway
         $ cd ~/ic880a-gateway
 
 - change the sartup script `start.sh` to add the concentrator reset at the begining, script should looks like this
 
+
         ttn@chip03:~ $ sudo nano /opt/ttn-gateway/bin/start.sh
 
-```shell
-#! /bin/bash
+				```shell
+				#! /bin/bash
 
-# Reset iC880a PIN (PE4=CSID0)
-SX1301_RESET_PIN=PE4
+				# Reset iC880a PIN (PE4=CSID0)
+				SX1301_RESET_PIN=PE4
 
-/usr/local/bin/sunxi-pio -m "$SX1301_RESET_PIN<1><0><1><0>"
-sleep 0.1
-/usr/local/bin/sunxi-pio -m $SX1301_RESET_PIN=1
-sleep 0.1
-/usr/local/bin/sunxi-pio -m $SX1301_RESET_PIN=0
+				/usr/local/bin/sunxi-pio -m "$SX1301_RESET_PIN<1><0><1><0>"
+				sleep 0.1
+				/usr/local/bin/sunxi-pio -m $SX1301_RESET_PIN=1
+				sleep 0.1
+				/usr/local/bin/sunxi-pio -m $SX1301_RESET_PIN=0
 
-# Test the connection, wait if needed.
-# ...
-```
+				# Test the connection, wait if needed.
+				# ...
+				```
 
 
         $ sudo ./install.sh
@@ -339,6 +341,7 @@ sleep 0.1
         $ cp inc/imst_rpi.h inc/imst_chip.h
 
   - then change the file `inc/imst_chip.h` to the following
+
 		```cpp
 		/*
 		* imst_chip.h
@@ -363,9 +366,10 @@ sleep 0.1
 		#define PID           0x6014
 
 		#endif /* _IMST_CHIP_H_ */
-
 		```
+
   - Now change the library configuration file `library.cfg` to set platform on the dedicated section, the line PLATFORM should now be
+
 		```
 		### Specify which platform you are on.
 		# Accepted values:
@@ -380,6 +384,8 @@ sleep 0.1
 
   - Rebuild the libloragw library
 
+
+
         # from /opt/ttn-gateway/lora_gateway/libloragw
         $ sudo make uninstall
         $ make 
@@ -387,6 +393,7 @@ sleep 0.1
         $ sudo ldconfig
 
 - You can test the concentrator presence with compiled `test_loragw_reg` after reset of the concentrator
+
 
         # from /opt/ttn-gateway/lora_gateway/libloragw
         $ sudo sunxi-pio -m "PE4<1><0><1><0>"
