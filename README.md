@@ -282,7 +282,7 @@ Add the line `ttn ALL=(ALL) NOPASSWD: ALL`
 The iC880A extented connection pin are the following, I've put the mapping of sunxi-pio tool, the tool to drive I/O pins
 
 | PIN function | Connector Name | Header Name | sunxi-pio Name |
-| :---: | :---: | :---: |
+| :---: | :---: | :---: | :---: |
 |	iC880AReset | U14_31 | CSID0 | PE4 |
 |	Led Heartbeat | U14_35 | CSID4 | PE8 |
 | Led Down | U14_34 | CSID3 | PE7 |
