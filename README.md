@@ -383,14 +383,14 @@ The iC880A extented connection pin are the following, I've put the mapping of su
 		```
 
   - Rebuild the libloragw library
-
-
-        # from /opt/ttn-gateway/lora_gateway/libloragw
-        $ sudo make uninstall
-        $ make 
-        $ sudo make install
-        $ sudo ldconfig
-        
+    
+		```
+    # from /opt/ttn-gateway/lora_gateway/libloragw
+    $ sudo make uninstall
+    $ make 
+    $ sudo make install
+    $ sudo ldconfig
+		```
 
 - You can test the concentrator presence with compiled `test_loragw_reg` after reset of the concentrator
 
