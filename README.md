@@ -334,7 +334,7 @@ sleep 0.1
   - This one has not been tested, just try it and tell me. Create a symlink `ln -sf /dev/spi32767.0 /dev/spidev0.0` so spi device has the same name than on RPI
   - If this does not works, just create new `imst_chip.h` file copied from original `imst_rpi.h`
 
-        # To check LED and make them blink (ic880a does not need to be plugged)
+
         $ cd /opt/ttn-gateway/lora_gateway/libloragw/
         $ cp inc/imst_rpi.h inc/imst_chip.h
 
