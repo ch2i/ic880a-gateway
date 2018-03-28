@@ -1,10 +1,10 @@
-# The Things Network: iC880a-based gateway
-
-**this repository has been deprecated**
+# this repository has been deprecated
 
 Please use now the new generic setup for SX1301 [concentrators](https://github.com/ch2i/LoraGW-Setup).
 
+# Below setup is kept for reference only
 
+# The Things Network: iC880a-based gateway
 
 Reference setup for [The Things Network](http://thethingsnetwork.org/) gateways based on the iC880a USB concentrator with a Raspberry Pi host.
 
